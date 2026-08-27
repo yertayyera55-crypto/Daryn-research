@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "highPriority": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "patternId": { "type": "string" },
+          "reason": { "type": "string" },
+          "preventiveHint": { "type": "string" }
+        },
+        "required": ["patternId", "reason", "preventiveHint"]
+      }
+    }
+  },
+  "required": ["highPriority"]
+}
