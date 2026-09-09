@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
-import { normalizeProfile } from "@/lib/profile";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { loadPersonalErrorProfile, normalizeProfile } from "@/lib/profile";
 import { attachObservedHistory, summarizeTimeline } from "@/lib/history";
 
 const canonicalResearchProfile = {
@@ -28,6 +28,8 @@ const canonicalResearchProfile = {
 };
 
 describe("research profile adapter", () => {
+  afterEach(() => vi.unstubAllEnvs());
+
   it("loads the canonical research field names without changing them", () => {
     const profile = normalizeProfile(canonicalResearchProfile);
     expect(profile.studentId).toBe("student_001");
@@ -37,6 +39,18 @@ describe("research profile adapter", () => {
   it("rejects invalid or duplicate pattern IDs", () => {
     expect(() => normalizeProfile({ ...canonicalResearchProfile, patterns: [{ ...canonicalResearchProfile.patterns[0], pattern_id: "P14" }, { ...canonicalResearchProfile.patterns[1], pattern_id: "P14" }] })).toThrow("duplicate");
     expect(() => normalizeProfile({ ...canonicalResearchProfile, patterns: [{ ...canonicalResearchProfile.patterns[0], pattern_id: "not-a-pattern" }] })).toThrow("Invalid Personal Error Profile");
+  });
+
+  it("uses the server-only JSON environment profile when it is configured", () => {
+    vi.stubEnv("PERSONAL_ERROR_PROFILE_JSON", JSON.stringify(canonicalResearchProfile));
+    const profile = loadPersonalErrorProfile();
+    expect(profile.studentId).toBe("student_001");
+    expect(profile.patterns[0]?.id).toBe("P14");
+  });
+
+  it("rejects malformed server-only JSON profiles", () => {
+    vi.stubEnv("PERSONAL_ERROR_PROFILE_JSON", "not-json");
+    expect(() => loadPersonalErrorProfile()).toThrow("PERSONAL_ERROR_PROFILE_JSON");
   });
 
   it("computes only observable occurrence history from complete essays", () => {
