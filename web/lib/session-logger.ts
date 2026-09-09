@@ -9,7 +9,9 @@ type LogEvent = {
 };
 
 export async function logResearchEvent(event: LogEvent) {
-  if (process.env.RESEARCH_LOGGING === "false") return;
+  // Vercel Functions have a read-only application filesystem. Production logging
+  // needs a hosted sink; until one is configured, it must not block tutoring.
+  if (process.env.RESEARCH_LOGGING === "false" || process.env.VERCEL === "1") return;
   const directory = path.join(process.cwd(), ".local-data");
   await mkdir(directory, { recursive: true });
   const record = {
