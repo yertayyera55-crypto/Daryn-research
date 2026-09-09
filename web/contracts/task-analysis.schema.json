@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "taskType": { "type": "string", "enum": ["Task1", "Task2"] },
+    "subtype": { "type": "string" },
+    "timeOrientation": { "type": "string", "enum": ["past", "present", "future", "mixed", "not_applicable"] },
+    "languageDemands": { "type": "array", "items": { "type": "string" }, "minItems": 1, "maxItems": 6 },
+    "rationale": { "type": "string" }
+  },
+  "required": ["taskType", "subtype", "timeOrientation", "languageDemands", "rationale"]
+}

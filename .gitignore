@@ -1,0 +1,5 @@
+# Keep credentials local, including environment-specific files and backups.
+.env
+.env.*
+!.env.example
+.DS_Store
