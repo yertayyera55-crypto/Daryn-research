@@ -92,10 +92,22 @@ export function findExistingPath(candidates: string[]): string | null {
   return candidates.find((candidate) => existsSync(candidate)) ?? null;
 }
 
+function loadProfileFromEnvironment(): PersonalErrorProfile | null {
+  const source = process.env.PERSONAL_ERROR_PROFILE_JSON?.trim();
+  if (!source) return null;
+  try {
+    return normalizeProfile(JSON.parse(source));
+  } catch {
+    throw new Error("PERSONAL_ERROR_PROFILE_JSON is not a valid Personal Error Profile.");
+  }
+}
+
 export function loadPersonalErrorProfile(): PersonalErrorProfile {
+  const configuredProfile = loadProfileFromEnvironment();
+  if (configuredProfile) return configuredProfile;
   const profilePath = findExistingPath(profileCandidates());
   if (!profilePath) {
-    throw new Error("Personal Error Profile was not found. Add research/personal_error_profile.json or set PERSONAL_ERROR_PROFILE_PATH.");
+    throw new Error("Personal Error Profile was not found. Add research/personal_error_profile.json, set PERSONAL_ERROR_PROFILE_PATH, or configure PERSONAL_ERROR_PROFILE_JSON.");
   }
   return normalizeProfile(JSON.parse(readFileSync(/* turbopackIgnore: true */ profilePath, "utf8")));
 }
