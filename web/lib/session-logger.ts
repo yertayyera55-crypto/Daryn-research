@@ -1,9 +1,10 @@
+import { redactSecrets } from "@/lib/secrets";
 import { appendFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 
 type LogEvent = {
   sessionId: string;
-  type: "session_started" | "intervention_shown" | "more_help_requested" | "hint_dismissed" | "pattern_resolved";
+  type: "session_started" | "intervention_shown" | "more_help_requested" | "hint_dismissed" | "pattern_resolved" | "final_reviewed";
   payload: Record<string, unknown>;
 };
 
@@ -16,5 +17,5 @@ export async function logResearchEvent(event: LogEvent) {
     timestamp: new Date().toISOString(),
     ...event,
   };
-  await appendFile(path.join(directory, "sessions.jsonl"), `${JSON.stringify(record)}\n`, "utf8");
+  await appendFile(path.join(directory, "sessions.jsonl"), `${JSON.stringify(record, (_key, value) => typeof value === "string" ? redactSecrets(value) : value)}\n`, "utf8");
 }

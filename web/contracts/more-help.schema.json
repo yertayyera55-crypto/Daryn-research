@@ -3,7 +3,8 @@
   "type": "object",
   "additionalProperties": false,
   "properties": {
-    "moreHelp": { "type": "string", "minLength": 1, "maxLength": 360 }
+    "explanation": { "type": "string", "minLength": 1, "maxLength": 600 },
+    "correction": { "type": "string", "minLength": 1, "maxLength": 600 }
   },
-  "required": ["moreHelp"]
+  "required": ["explanation", "correction"]
 }

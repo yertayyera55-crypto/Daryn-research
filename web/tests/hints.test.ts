@@ -14,4 +14,9 @@ describe("hint reconciliation", () => {
     expect(result.active).toEqual([]);
     expect(result.resolved).toEqual([tenseDetection]);
   });
+
+  it("does not reopen an exact finding dismissed by the student during this session", () => {
+    const result = reconcileDetections([], [tenseDetection], new Set(["P14:jobs increase"]));
+    expect(result.active).toEqual([]);
+  });
 });

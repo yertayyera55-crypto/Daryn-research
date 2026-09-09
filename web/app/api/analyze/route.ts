@@ -1,3 +1,4 @@
+import { redactSecrets } from "@/lib/secrets";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getAIProvider } from "@/lib/ai";
@@ -40,6 +41,6 @@ export async function POST(request: Request) {
   } catch (error) {
     const message = error instanceof Error ? error.message : "Could not analyze this task.";
     const status = error instanceof z.ZodError ? 400 : 503;
-    return NextResponse.json({ error: message }, { status });
+    return NextResponse.json({ error: redactSecrets(message) }, { status });
   }
 }

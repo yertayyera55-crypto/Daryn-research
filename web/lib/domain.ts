@@ -67,9 +67,21 @@ export const detectionSchema = z.object({
 });
 export type Detection = z.infer<typeof detectionSchema>;
 
-export const topThreeRisksSchema = z
+/** A clear issue found in the current essay, but not yet a recurring personal pattern. */
+export const generalFindingSchema = z.object({
+  category: z.string().min(1).max(100),
+  textSpan: z.string().min(1).max(500),
+  hint: z.string().min(1).max(280),
+  explanation: z.string().min(1).max(600),
+  correction: z.string().min(1).max(700),
+});
+export type GeneralFinding = z.infer<typeof generalFindingSchema>;
+
+export const PREDICTED_RISK_COUNT = 4;
+
+export const predictedRisksSchema = z
   .array(riskSchema)
-  .length(3)
+  .length(PREDICTED_RISK_COUNT)
   .superRefine((risks, ctx) => {
     const ids = risks.map((risk) => risk.patternId);
     if (new Set(ids).size !== ids.length) {
@@ -78,7 +90,7 @@ export const topThreeRisksSchema = z
   });
 
 export const riskRankingSchema = z.object({
-  highPriority: topThreeRisksSchema,
+  highPriority: predictedRisksSchema,
 });
 export type RiskRanking = z.infer<typeof riskRankingSchema>;
 

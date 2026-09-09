@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { detectionSchema, riskRankingSchema, taskAnalysisSchema } from "@/lib/domain";
+import { detectionSchema, generalFindingSchema, riskRankingSchema, taskAnalysisSchema } from "@/lib/domain";
 
 function parseJson(text: string): unknown {
   try {
@@ -18,10 +18,20 @@ export function parseRiskRanking(text: string) {
 }
 
 export function parseDetections(text: string) {
-  const data = z.object({ detections: z.array(detectionSchema).max(3) }).parse(parseJson(text));
+  const data = z.object({ detections: z.array(detectionSchema).max(60) }).parse(parseJson(text));
   return data.detections;
 }
 
 export function parseMoreHelp(text: string) {
-  return z.object({ moreHelp: z.string().min(1).max(360) }).parse(parseJson(text)).moreHelp;
+  return z.object({
+    explanation: z.string().min(1).max(600),
+    correction: z.string().min(1).max(600),
+  }).parse(parseJson(text));
+}
+
+export function parseFinalAudit(text: string) {
+  return z.object({
+    personalDetections: z.array(detectionSchema).max(60),
+    otherFindings: z.array(generalFindingSchema).max(5),
+  }).parse(parseJson(text));
 }

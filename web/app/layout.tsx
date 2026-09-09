@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Personalized IELTS Writing Mentor",
+  title: "ErrorEcho",
   description: "A local prototype for selective, personalized IELTS writing support.",
 };
 

@@ -5,13 +5,13 @@
   "properties": {
     "detections": {
       "type": "array",
-      "maxItems": 3,
+      "maxItems": 60,
       "items": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
           "patternId": { "type": "string" },
-          "detected": { "type": "boolean", "const": true },
+          "detected": { "type": "boolean" },
           "textSpan": { "type": "string" },
           "hint": { "type": "string" }
         },
